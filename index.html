@@ -46,7 +46,8 @@
         } else {
           result.textContent = cat === "cat1" ? "左の猫に1票！🐾" : "右の猫に1票！🐾";
           await showRanking();
-          loadRandomCats(); // 投票後に新しい猫を表示
+          // 100ms 遅延させて画像を更新
+  　　　　 setTimeout(loadRandomCats, 100);
         }
       }
 
@@ -74,6 +75,7 @@
   </script>
 </body>
 </html>
+
 
 
 
