@@ -12,8 +12,8 @@
 <body>
   <h1>🐱 猫バトル！どっちがかわいい？</h1>
   <div id="battle">
-    <img src="https://placecats.com/300/300" id="cat1">
-    <img src="https://placecats.com/301/300" id="cat2">
+    <img src="" id="cat1">
+    <img src="" id="cat2">
   </div>
   <p id="result"></p>
 
@@ -29,21 +29,24 @@
       const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const result = document.getElementById('result');
 
-      // ランダム猫画像を生成する関数
-      function loadRandomCats() {
-        const cat1 = document.getElementById('cat1');
-        const cat2 = document.getElementById('cat2');
+      // The Cat API キー
+      const CAT_API_KEY = "live_GnwwK8jNQLooIxPefU5304IpqtzP2ELsDeEJDMNn9pJEbwL8sTcrjBhHW3UrKphT";
 
-        // 新しいImageオブジェクトで事前に読み込む
-        const newCat1 = new Image();
-        const newCat2 = new Image();
+      // ランダム猫画像を取得して表示
+      async function loadRandomCats() {
+        const options = { headers: { 'x-api-key': CAT_API_KEY } };
 
-        newCat1.src = `https://placecats.com/300/300?random=${Math.random()}`;
-        newCat2.src = `https://placecats.com/301/300?random=${Math.random()}`;
+        try {
+          const res1 = await fetch('https://api.thecatapi.com/v1/images/search', options);
+          const cat1Data = await res1.json();
+          document.getElementById('cat1').src = cat1Data[0].url;
 
-        // 読み込み完了後に置き換える
-        newCat1.onload = () => cat1.src = newCat1.src;
-        newCat2.onload = () => cat2.src = newCat2.src;
+          const res2 = await fetch('https://api.thecatapi.com/v1/images/search', options);
+          const cat2Data = await res2.json();
+          document.getElementById('cat2').src = cat2Data[0].url;
+        } catch (err) {
+          console.error("猫画像の取得に失敗しました", err);
+        }
       }
 
       // 投票関数
@@ -57,7 +60,7 @@
         } else {
           result.textContent = cat === "cat1" ? "左の猫に1票！🐾" : "右の猫に1票！🐾";
           await showRanking();
-          setTimeout(loadRandomCats, 100); // 投票後に新しい猫画像を表示
+          loadRandomCats(); // 投票後に新しい猫画像を表示
         }
       }
 
@@ -78,9 +81,9 @@
       document.getElementById('cat1').onclick = () => vote('cat1');
       document.getElementById('cat2').onclick = () => vote('cat2');
 
-      // ページ読み込み時にランキング表示 & ランダム猫表示
+      // ページ読み込み時にランキング表示＆初回猫画像取得
       showRanking();
-      setTimeout(loadRandomCats, 100);
+      loadRandomCats();
     });
   </script>
 </body>
