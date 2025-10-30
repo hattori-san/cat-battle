@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>猫バトル！</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; background: #f9f9f9; }
+    img { width: 300px; height: 300px; object-fit: cover; margin: 10px; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }
+    img:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <h1>🐱 猫バトル！どっちがかわいい？</h1>
+  <div id="battle">
+    <img src="https://placekitten.com/300/300" id="cat1">
+    <img src="https://placekitten.com/301/300" id="cat2">
+  </div>
+  <p id="result"></p>
+  <script>
+    const result = document.getElementById('result');
+    document.getElementById('cat1').onclick = () => result.textContent = "左の猫に1票！🐾";
+    document.getElementById('cat2').onclick = () => result.textContent = "右の猫に1票！🐾";
+  </script>
+</body>
+</html>
