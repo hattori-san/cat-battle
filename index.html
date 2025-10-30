@@ -29,6 +29,12 @@
       const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const result = document.getElementById('result');
 
+       // ランダム猫画像を生成する関数
+      function loadRandomCats() {
+        document.getElementById('cat1').src = `https://cataas.com/cat?width=300&height=300&random=${Math.random()}`;
+        document.getElementById('cat2').src = `https://cataas.com/cat?width=300&height=300&random=${Math.random()}`;
+      }
+
       // 投票関数
       async function vote(cat) {
         const { data, error } = await supabaseClient
@@ -39,7 +45,8 @@
           result.textContent = "エラーが発生しました 😢";
         } else {
           result.textContent = cat === "cat1" ? "左の猫に1票！🐾" : "右の猫に1票！🐾";
-          showRanking();
+          await showRanking();
+          loadRandomCats(); // 投票後に新しい猫を表示
         }
       }
 
@@ -62,7 +69,9 @@
 
       // ページ読み込み時にランキング表示
       showRanking();
+      loadRandomCats();
     });
   </script>
 </body>
 </html>
+
