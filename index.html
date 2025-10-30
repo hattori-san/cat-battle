@@ -16,47 +16,53 @@
     <img src="https://placekitten.com/301/300" id="cat2">
   </div>
   <p id="result"></p>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-  const SUPABASE_URL = "https://ptrmzkeocewryuinzjys.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0cm16a2VvY2V3cnl1aW56anlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4MDY1ODYsImV4cCI6MjA3NzM4MjU4Nn0.raaBOG5TkAxdw3aob9D2HyUORnJLV5wPS7u7MfNm5Ww";
 
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const result = document.getElementById('result');
+  <!-- Supabase ライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  async function vote(cat) {
-    const { data, error } = await supabaseClient
-      .from('votes')
-      .insert([{ cat: cat }]);
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Supabase 接続情報
+      const SUPABASE_URL = "https://ptrmzkeocewryuinzjys.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0cm16a2VvY2V3cnl1aW56anlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4MDY1ODYsImV4cCI6MjA3NzM4MjU4Nn0.raaBOG5TkAxdw3aob9D2HyUORnJLV5wPS7u7MfNm5Ww";
 
-    if (error) {
-      result.textContent = "エラーが発生しました 😢";
-    } else {
-      result.textContent = cat === "cat1" ? "左の猫に1票！🐾" : "右の猫に1票！🐾";
+      const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const result = document.getElementById('result');
+
+      // 投票関数
+      async function vote(cat) {
+        const { data, error } = await supabaseClient
+          .from('votes')
+          .insert([{ cat: cat }]);
+
+        if (error) {
+          result.textContent = "エラーが発生しました 😢";
+        } else {
+          result.textContent = cat === "cat1" ? "左の猫に1票！🐾" : "右の猫に1票！🐾";
+          showRanking();
+        }
+      }
+
+      // ランキング表示関数
+      async function showRanking() {
+        const { data, error } = await supabaseClient
+          .from('votes')
+          .select('cat');
+
+        if (data) {
+          const counts = { cat1: 0, cat2: 0 };
+          data.forEach(v => counts[v.cat]++);
+          result.textContent += `\nランキング: 左 ${counts.cat1}票 / 右 ${counts.cat2}票`;
+        }
+      }
+
+      // クリックイベント登録
+      document.getElementById('cat1').onclick = () => vote('cat1');
+      document.getElementById('cat2').onclick = () => vote('cat2');
+
+      // ページ読み込み時にランキング表示
       showRanking();
-    }
-  }
-
-  async function showRanking() {
-    const { data, error } = await supabaseClient
-      .from('votes')
-      .select('cat');
-
-    if (data) {
-      const counts = { cat1: 0, cat2: 0 };
-      data.forEach(v => counts[v.cat]++);
-      result.textContent += `\nランキング: 左 ${counts.cat1}票 / 右 ${counts.cat2}票`;
-    }
-  }
-
-  document.getElementById('cat1').onclick = () => vote('cat1');
-  document.getElementById('cat2').onclick = () => vote('cat2');
-
-  showRanking();
-
-</script>
-
+    });
+  </script>
 </body>
 </html>
-
-
