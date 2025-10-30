@@ -30,22 +30,21 @@
       const result = document.getElementById('result');
 
       // ランダム猫画像を生成する関数
-　　　 function loadRandomCats() {
+      function loadRandomCats() {
         const cat1 = document.getElementById('cat1');
         const cat2 = document.getElementById('cat2');
 
-      // 新しいImageオブジェクトで事前に読み込む
+        // 新しいImageオブジェクトで事前に読み込む
         const newCat1 = new Image();
         const newCat2 = new Image();
 
         newCat1.src = `https://placecats.com/300/300?random=${Math.random()}`;
         newCat2.src = `https://placecats.com/301/300?random=${Math.random()}`;
 
-      // 読み込み完了後に置き換える
+        // 読み込み完了後に置き換える
         newCat1.onload = () => cat1.src = newCat1.src;
         newCat2.onload = () => cat2.src = newCat2.src;
       }
-
 
       // 投票関数
       async function vote(cat) {
@@ -58,8 +57,7 @@
         } else {
           result.textContent = cat === "cat1" ? "左の猫に1票！🐾" : "右の猫に1票！🐾";
           await showRanking();
-          // 100ms 遅延させて画像を更新
-  　　　　 setTimeout(loadRandomCats, 100);
+          setTimeout(loadRandomCats, 100); // 投票後に新しい猫画像を表示
         }
       }
 
@@ -80,17 +78,10 @@
       document.getElementById('cat1').onclick = () => vote('cat1');
       document.getElementById('cat2').onclick = () => vote('cat2');
 
-      // ページ読み込み時にランキング表示
+      // ページ読み込み時にランキング表示 & ランダム猫表示
       showRanking();
       setTimeout(loadRandomCats, 100);
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
